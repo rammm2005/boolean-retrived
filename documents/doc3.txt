@@ -1,0 +1,1 @@
+Penerapan deep learning pada komputer visi memungkinkan mesin untuk mengenali objek dalam gambar atau video dengan akurasi yang sangat tinggi.

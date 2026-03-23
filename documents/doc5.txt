@@ -1,0 +1,1 @@
+Kecerdasan buatan dan deep learning membutuhkan spesifikasi komputer yang tinggi, terutama pada bagian GPU untuk melakukan komputasi paralel.
