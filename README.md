@@ -26,7 +26,12 @@ Pastikan Anda telah menginstal Python dan library berikut:
 - `numpy`
 
 ```bash
-pip install streamlit Sastrawi pandas numpy
+pip install -r requirements.txt
+```
+
+Atau instal satu per satu:
+```bash
+pip install streamlit PySastrawi pandas numpy
 ```
 
 ## Cara Menjalankan
@@ -38,6 +43,14 @@ pip install streamlit Sastrawi pandas numpy
    streamlit run app.py
    ```
 4. Buka browser pada alamat `http://localhost:8501`.
+
+## Deployment ke Streamlit Cloud
+
+1. Push kode ini ke repository **GitHub** (Pastikan file `requirements.txt` disertakan).
+2. Login ke [Streamlit Cloud](https://share.streamlit.io/).
+3. Klik **New App**, lalu pilih repository dan branch Anda.
+4. Masukkan `Main file path` sebagai `app.py`.
+5. Klik **Deploy**.
 
 ## Struktur Proyek
 
