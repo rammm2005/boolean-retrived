@@ -2,12 +2,8 @@ import os
 import re
 import pandas as pd
 import numpy as np
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import streamlit as st
 from collections import defaultdict
-
-factory = StemmerFactory()
-stemmer = factory.create_stemmer()
 
 def vector_to_binary_string(vector):
     return "".join(map(str, vector))
@@ -16,8 +12,7 @@ def preprocess_text(text, case_sensitive=True):
     text = re.sub(r'[^\w\s]', ' ', text)
     if not case_sensitive:
         text = text.lower()
-    tokens = text.split()
-    return [stemmer.stem(token) for token in tokens]
+    return text.split()
 
 def get_documents(folder_path, case_sensitive=True):
     documents = {}
@@ -80,27 +75,30 @@ def get_vector_from_inverted(term, inverted_index, doc_list):
     return vector
 
 class BooleanEvaluator:
-    def __init__(self, df, inverted_index, doc_names, mode, stemmer):
+    def __init__(self, df, inverted_index, doc_names, mode, case_sensitive=True):
         self.df = df
         self.inverted_index = inverted_index
         self.doc_names = doc_names
         self.mode = mode
-        self.stemmer = stemmer
+        self.case_sensitive = case_sensitive
         self.steps = []
         self.term_info = []
         self.expansion_steps = []
         self.term_vectors = {}
 
+    def get_term(self, term):
+        return term if self.case_sensitive else term.lower()
+
     def get_vector(self, term):
-        stemmed = self.stemmer.stem(term)
-        if stemmed not in self.term_vectors:
+        processed_term = self.get_term(term)
+        if processed_term not in self.term_vectors:
             if self.mode == "Incidence Matrix":
-                v = get_vector_from_matrix(stemmed, self.df)
+                v = get_vector_from_matrix(processed_term, self.df)
             else:
-                v = get_vector_from_inverted(stemmed, self.inverted_index, self.doc_names)
-            self.term_vectors[stemmed] = v
-            self.term_info.append(f"Vektor ({stemmed}): {vector_to_binary_string(v)}")
-        return self.term_vectors[stemmed]
+                v = get_vector_from_inverted(processed_term, self.inverted_index, self.doc_names)
+            self.term_vectors[processed_term] = v
+            self.term_info.append(f"Vektor ({processed_term}): {vector_to_binary_string(v)}")
+        return self.term_vectors[processed_term]
 
     def evaluate(self, tokens, raw_query):
         precedence = {'NOT': 3, 'AND': 2, 'OR': 1}
@@ -169,7 +167,7 @@ class BooleanEvaluator:
 
 st.set_page_config(page_title="Boolean Retrieval System", layout="wide")
 st.title("Sistem Temu Kembali Informasi (STKI)")
-st.markdown("Implementasi model Boolean Retrieval untuk pencarian dokumen berdasarkan kata kunci.")
+st.markdown("Implementasi model Boolean Retrieval untuk pencarian dokumen berdasarkan kata kunci (Tanpa Stemming).")
 
 folder_path = "documents"
 st.sidebar.header("⚙ Konfigurasi")
@@ -198,7 +196,7 @@ else:
     if query:
         raw_tokens = re.findall(r'\(|\)|[\w]+', query)
         processed_query_tokens = [t.upper() if t.upper() in ["AND", "OR", "NOT"] or t in ["(", ")"] else t for t in raw_tokens]
-        evaluator = BooleanEvaluator(df_incidence, inverted_index, doc_names, mode, stemmer)
+        evaluator = BooleanEvaluator(df_incidence, inverted_index, doc_names, mode, case_sensitive=case_sensitive)
         
         try:
             result_vector = evaluator.evaluate(processed_query_tokens, query)

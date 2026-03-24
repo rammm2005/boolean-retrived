@@ -4,8 +4,7 @@ Sistem Temu Kembali Informasi (STKI) sederhana berbasis Boolean yang mengimpleme
 
 ## Fitur Utama
 
-- **Preprocessing Lengkap**:
-    - **Stemming**: Menggunakan library [Sastrawi](https://github.com/sastrawi/sastrawi) untuk pengolahan kata dasar bahasa Indonesia.
+- **Preprocessing**:
     - **Case Sensitivity ("Beda")**: Mendukung opsi untuk membedakan huruf kapital dan kecil (Contoh: `Komputer` dianggap beda dengan `komputer`).
     - **Tokenisasi**: Pembersihan tanda baca dan pemisahan kata berdasarkan spasi.
 - **Model Retrieval**:
@@ -26,12 +25,7 @@ Pastikan Anda telah menginstal Python dan library berikut:
 - `numpy`
 
 ```bash
-pip install -r requirements.txt
-```
-
-Atau instal satu per satu:
-```bash
-pip install streamlit PySastrawi pandas numpy
+pip install streamlit pandas numpy
 ```
 
 ## Cara Menjalankan
